@@ -14,6 +14,7 @@
 #' @param genind boolean if TRUE return a genind object
 #' @param pop_name charcter Name for population defined in genind object
 #' (not required if genind is not TRUE)
+#' @param loc_name character name to five locus in genind object
 #'
 #' @return Either a matrix with individuals in columns, alleles in rows or, if
 #' genind is TRUE a genind object for one population and locus.
@@ -27,7 +28,7 @@
 #' obs_allele_freqs_noNA <- apply(nancycats$tab[,1:16], 2,mean, na.rm=TRUE)
 #' rgenotypes(10, 2, obs_allele_freqs_noNA)
 
-rgenotypes <- function(n, ploidy, probs, genind=FALSE, pop_name="A"){
+rgenotypes <- function(n, ploidy, probs, genind=FALSE, pop_name="A", loc_name = "L1"){
  if(all(is.na(probs))){ 
   res <- matrix(rep(probs, n), ncol=n)
   }
@@ -35,8 +36,8 @@ rgenotypes <- function(n, ploidy, probs, genind=FALSE, pop_name="A"){
  res <- rmultinom(n, ploidy, probs)
  if(genind){
     res <- t(res)
-    colnames(res) <- paste("allele", 1:length(probs), sep="")
-    res <- genind(res, rep(pop_name, n)) 
+    colnames(res) <- paste(loc_name, 1:length(probs), sep=".")
+    res <- genind(res/2, rep(pop_name, n)) 
  }
  return(res)
 }

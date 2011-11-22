@@ -1,5 +1,5 @@
 Package: mmod
-Version: 0.31
+Version: 1.0
 Date: 2011-11-22
 Title: Modern measures of population differentiation
 Author: David Winter
@@ -16,6 +16,6 @@ Collate: 'diff_stats.R' 'D_Jost.R' 'Gst_Hedrick.R' 'Gst_Nei.R'
         'pairwise_Gst_Hedrick.R' 'pairwise_Gst_Nei.R' 'help.R'
         'diff_test.R' 'chao_bootstrap.R' 'summarise_bootstrap.R'
         'rgenotypes.R' 'dist.codom.R' 'Phi_st_Meirmans.R' 'HsHt.R'
-Packaged: 2012-05-02 11:39:36 UTC; david
+Packaged: 2012-08-11 08:36:58 UTC; david
 Repository: CRAN
-Date/Publication: 2012-05-03 06:21:46
+Date/Publication: 2012-08-11 09:10:23

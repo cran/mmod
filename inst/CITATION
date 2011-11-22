@@ -1,0 +1,11 @@
+citHeader("To cite mmod in a publication use:")
+
+citEntry(entry="Article",
+	title = "mmod: an R library for the calculation of population differentiation statistics",
+        author = personList(as.person("D.J. Winter")),
+	journal = "Molecular Ecology Resources",
+  	year = "2012",
+
+        textVersion = "Winter D.J. (In press). mmod: an R library for the calculation of population differentiation statistics")
+
+
