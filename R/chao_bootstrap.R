@@ -6,32 +6,49 @@
 #' returns a list of genind objects representing bootsrap samples that can then
 #' be futher processed (see examples).
 #' 
+#' You should note, this is a standard (frequentist) approach to quantifying
+#' uncertainty - effectively asking "if the population was exactly like as our"
+#' sample, and we repeatedly took samples like this from it, how much would 
+#' those samples vary?" The confidence intervals don't include uncertainty 
+#' produced from any biases in the way you collected your data. 
+#' Additoinally, this boostrapping procedure displays a slight upward bias, if
+#' you plan or reporting a confidence interval for your statistic, it is 
+#' probably a good idea to subtract the difference between the point estimate 
+#' of the statistic and the mean of the boostrap distribution from the extremes
+#' of the interval. 
 #'
 #' @param x genind object (from package adegenet)
 #' @param nreps numeric number of bootstrap replicates to perform (default 1000)
 #' @export
+#' @references Chao, A. et al. (2008). A Two-Stage probabilistic approach to Multiple-Community similarity indices. Biometrics, 64:1178-1186
 #' @examples
 #'\dontrun{  
 #' data(nancycats)
+#' obs.D <- D_Jost(nancycats)
 #' bs <- chao_bootstrap(nancycats)
-#' bs_D <- sapply(bs, D_Jost)
-#' hist(unlist(bs_D[2,]))
-#' quantile( unlist(bs_D[2,]), c(0.025, 0.5, 0.975) )
+#' bs_D <- summarise_bootstrap(bs, D_Jost)
+#' bias <- bs.D$summary.global.het[1] - obs.D$global.het
+#' bs.D$summary.global.het - bias
 #'}
 #' @family resample
 #' 
 #'
+
+chao_bootstrap <- function(x, nreps=1000){
+  loc <- x@loc.fac
+  pop_sizes <- table(pop(x))
+  pop_n <- length(pop_sizes)
+  #population allele frequencies
+  m <- apply(x@tab,2, function(y) tapply(y, pop(x), mean, na.rm=TRUE) )
+  per_pop <- function(i){
+    t(do.call(rbind, tapply(m[i,], loc, function(p) rgenotypes(pop_sizes[i],2,p)) ))
+  }
   
-chao_bootstrap <- function(x, nreps = 1000){
   one_rep <- function(){
     temp <- x
-    bs <- by(x@tab, pop(x),function(x) x[sample(1:dim(x)[1],replace=T),] )
-    temp@tab <- as.matrix(do.call("rbind", bs))
+    temp@tab <- do.call(rbind, sapply(1:pop_n , per_pop, simplify=FALSE))/2
     return(temp)
   }
-  res <- replicate(nreps, one_rep() )
-  return(res)
+  
+  return(replicate(nreps, one_rep()))
 }
-
-
-

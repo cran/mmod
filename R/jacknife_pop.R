@@ -1,7 +1,8 @@
 #' Calculate differentiation stats for a jacknife sample of a Genind opject
 #'
-#' Makes a series of jacknife samples across populations from a Genind object 
-#' and calculates differentiation stats for each sample.
+#' Makes a series of jacknife samples across populations from a Genind object.
+#' This functino resurns a list of genind objects that can then be further 
+#' processed (see examples).
 #'
 #' @param x genind object (from package adegenet)
 #' @param sample_frac fraction of pops to sample in each replication (default 0.5)
@@ -12,9 +13,7 @@
 #' data(nancycats)
 #' obs <- diff_stats(nancycats)
 #' jn <- jacknife_populations(nancycats)
-#' D_sampled <-jn[5,]
-#' hist(D_sampled)
-#' abline(h=obs$global)
+#' jn.D <- summarise_bootstrap(jn, D_Jost)
 #' }
 #' @family resample
 
@@ -24,7 +23,7 @@ jacknife_populations <- function(x, sample_frac=0.5, nreps=1000){
      cat(paste(i,"of", nreps,"reps completed"))
   }
   to.sample <- sample(d$pop.names, length(d$pop.names) * sample_frac)
-  return(diff_stats(d[d$pop.names %in% to.sample,])$global)
+  return(d[d$pop.names %in% to.sample,])
  }
  return(sapply(1:nreps, rep, x))
 }

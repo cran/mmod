@@ -24,8 +24,9 @@
 D_Jost <- function(x){
   n <- length(unique(pop(x)))
   harmN <- harmonic_mean(table(pop(x)))
+  pops <- pop(x)
   D.per.locus <- function(g) {
-    a <- makefreq(genind2genpop(g, quiet=T), quiet=T)[[1]]
+    a <- apply(g@tab,2,function(row) tapply(row, pops, mean, na.rm=TRUE))
     HpS <- sum(1 - apply(a^2, 1, sum, na.rm=TRUE)) / n
     Hs_est <- (2*harmN/(2*harmN-1))*HpS
     HpT <- 1 - sum(apply(a,2,mean, na.rm=TRUE)^2)
@@ -34,12 +35,12 @@ D_Jost <- function(x){
     D <- (Ht_est-Hs_est)/(1-Hs_est) * (n/(n-1))
     return(c(Hs_est, Ht_est, D))
   }
- loci <- sapply(seploc(x), D.per.locus)
-  global_Hs <- mean(loci[1,], na.rm=T)
-  global_Ht <- mean(loci[2,], na.rm=T)
+ loci <- t(sapply(seploc(x), D.per.locus))
+  global_Hs <- mean(loci[,1], na.rm=T)
+  global_Ht <- mean(loci[,2], na.rm=T)
   global_D <-  (global_Ht - global_Hs)/(1 - global_Hs ) * (n/(n-1))
-  harm_D <- harmonic_mean(loci[3,])
-  return(list("per.locus"=loci[3,],
+  harm_D <- harmonic_mean(loci[,3])
+  return(list("per.locus"=loci[,3],
               "global.het"=global_D,
               "global.harm_mean" = harm_D
         ))

@@ -13,7 +13,7 @@
 }
 \details{
   Takes a genind object with population information and
-  calculates Hedrick's G'st. This Returns a list with
+  calculates Hedrick's G''st. This Returns a list with
   values for each locus as well as a global estimates
 
   Because estimators of Hs and Ht are used, it's possible
@@ -28,6 +28,10 @@ Gst_Hedrick(nancycats)
 \references{
   Hedrick, PW. (2005), A Standardized Genetic
   Differentiation Measure. Evolution 59: 1633-1638.
+
+  Meirmans PG, Hedrick PW (2011), Assessing population
+  structure: FST and related measures. Molecular Ecology
+  Resources, 11:5-18
 }
 \seealso{
   Other diffstat: \code{\link{diff_stats}},

@@ -1,4 +1,4 @@
-#' Apply a differentiation statistic to a bootstrap sample sample
+#' Apply a differentiation statistic to a bootstrap sample
 #'
 #' This function applies a differentiation statistic (eg, D_Jost, Gst_Hedrick or 
 #' Gst_Nei) to a list of genind objects, possibly produced with
@@ -24,9 +24,8 @@
 summarise_bootsrap <- function(bs, statistic){
   nreps <- length(bs)
   stats <- sapply(bs, statistic)
-  loc_stats <- matrix(unlist(stats[1,]), nrow=nreps, 
-               dimnames=list(paste("rep", 1:nreps, sep=""), bs[[1]]@loc.names)
-               )
+  loc_stats <- do.call(rbind, stats["per.locus",])
+
   res <-list("per.locus"= loc_stats,
              "global.het"=unlist(stats[2,])
             )
@@ -35,7 +34,10 @@ summarise_bootsrap <- function(bs, statistic){
     res$global.harm <- unlist(stats[3,])
     }
   summarise <- function(x){
-    return(c(mean=mean(x), quantile(x, c(0.025, 0.975))))
+    return(c(mean=mean(x), 
+             quantile(x, c(0.025, 0.975), na.rm=TRUE),
+             variance=var(x) 
+            ))
   }
   res$summary.loci <- apply(loc_stats, 2, summarise)
   res$summary.global.het <- summarise(res$global.het)
