@@ -4,13 +4,15 @@
 #' Nei and Chesser's estimators for Hs and Ht
 #'
 #' @param x genind object (from package adegenet)
-#' @export
+#' @return per.locus estimates of Gst for each locus in the dataset
+#' @return per.locus estimates of Gst for across all loci
 #' @references
 #'  Nei M. (1973) Analysis of gene diversity in subdivided populations. PNAS: 3321-3323. 
 #' @references
 #'  Nei M, Chesser RK. (1983). Estimation of fixation indices and gene diversities. Annals of Human Genetics. 47: 253-259.
 #' @family diffstat
 #' @family Nei
+#' @export
 #' @examples
 #' 
 #' data(nancycats)
@@ -18,16 +20,10 @@
 
 Gst_Nei <- function(x){
   n <- length(unique(pop(x)))
-  harmN <- harmonic_mean(table(pop(x)))
-  pops <- pop(x)
-  Gst.per.locus <- function(g) {
-    #what we need to calculate these 
-    a <- apply(g@tab,2,function(row) tapply(row, pops, mean, na.rm=TRUE))
-    HpS <- sum(1 - apply(a^2, 1, sum, na.rm=TRUE)) / n
-    Hs_est <- (2*harmN/(2*harmN-1))*HpS
-    HpT <- 1 - sum(apply(a,2,mean, na.rm=TRUE)^2)
-    Ht_est <- HpT + Hs_est/(2*harmN*n)
-    #The stat itself
+  Gst.per.locus <- function(g) { 
+    hets <- HsHt(g,n) #A private function form mmod
+    Ht_est <- hets["Ht_est"]
+    Hs_est <- hets["Hs_est"]
     G_est <- (Ht_est-Hs_est)/Ht_est
     return(c(Hs_est, Ht_est, G_est))
   }

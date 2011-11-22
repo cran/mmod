@@ -7,20 +7,21 @@
 #' be futher processed (see examples).
 #' 
 #' You should note, this is a standard (frequentist) approach to quantifying
-#' uncertainty - effectively asking "if the population was exactly like as our"
+#' uncertainty - effectively asking "if the population was exactly like our
 #' sample, and we repeatedly took samples like this from it, how much would 
 #' those samples vary?" The confidence intervals don't include uncertainty 
 #' produced from any biases in the way you collected your data. 
-#' Additoinally, this boostrapping procedure displays a slight upward bias, if
-#' you plan or reporting a confidence interval for your statistic, it is 
-#' probably a good idea to subtract the difference between the point estimate 
-#' of the statistic and the mean of the boostrap distribution from the extremes
-#' of the interval. 
+#' Additionally, this boostrapping procedure displays a slight upward bias for 
+#' some datasets. If you plan or reporting a confidence interval for your 
+#' statistic, it is  probably a good idea to subtract the difference between 
+#' the point estimate of the statistic and the mean of the boostrap distribution 
+#' from the extremes of the interval (as demonstrated in the expample below)
 #'
 #' @param x genind object (from package adegenet)
 #' @param nreps numeric number of bootstrap replicates to perform (default 1000)
 #' @export
 #' @references Chao, A. et al. (2008). A Two-Stage probabilistic approach to Multiple-Community similarity indices. Biometrics, 64:1178-1186
+#' @return A list of genind objects
 #' @examples
 #'\dontrun{  
 #' data(nancycats)

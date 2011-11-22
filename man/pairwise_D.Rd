@@ -10,6 +10,9 @@
   \item{linearized}{logical, if TRUE will turned linearized
   D (1/1-D)}
 }
+\value{
+  A distance matrix with between-population values of D
+}
 \description{
   This function calculates Jost's D, a measure of genetic
   differentiation, between all combinations of populaitons

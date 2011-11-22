@@ -1,6 +1,6 @@
 \name{jacknife_populations}
 \alias{jacknife_populations}
-\title{Calculate differentiation stats for a jacknife sample of a Genind opject}
+\title{Create jacknife samples of a genind object by population}
 \usage{
   jacknife_populations(x, sample_frac = 0.5, nreps = 1000)
 }
@@ -13,11 +13,14 @@
   \item{nreps}{number of jacknife replicates to run
   (default 1000)}
 }
+\value{
+  a list of genind objects to be further processed
+}
 \description{
   Makes a series of jacknife samples across populations
-  from a Genind object. This functino resurns a list of
+  from a genind object. This function returns a list of
   genind objects that can then be further processed (see
-  examples).
+  examples below).
 }
 \examples{
 \dontrun{
@@ -29,6 +32,6 @@ jn.D <- summarise_bootstrap(jn, D_Jost)
 }
 \seealso{
   Other resample: \code{\link{chao_bootstrap}},
-  \code{\link{summarise_bootsrap}}
+  \code{\link{summarise_bootstrap}}
 }
 

@@ -1,13 +1,18 @@
-#' Calculate differentiation statistics for a genind objects
+#' Calculate differentiation statistics for a genind object
 #'
-#' This function calculates three different statistics of differentiation
-#' for a genetic dataset. Nei's Gst, Hedrick's G'st and Jost's D
+#' By default this function calculates three different statistics of 
+#' differentiation for a genetic dataset. Nei's Gst, Hedrick's G''st and
+#' Jost's D. Optionally, it can also calculate Phi'st, which is not calculated 
+#' by default as it can take somewhat more time to run.
 #' 
-#' See individual functions D_Jost(), Gst_Hedrick() and Gst_Nei() for more
-#' details
+#' See individual functions (listed below) for more details.
 #'
 #' @param x genind object (from package adegenet)
+#' @param phi_st Boolean Calculate Phi_st (default is FALSE)
 #' @export
+#'
+#' @return per.locus values for each statistic for each locus in the dataset
+#' @return global estimtes for these statistics across all loci in the dataset 
 #' 
 #' @references
 #'  Hedrick, PW. (2005), A Standardized Genetic Differentiation Measure. Evolution 59: 1633-1638. 
@@ -19,26 +24,26 @@
 #'  Nei M. (1973) Analysis of gene diversity in subdivided populations. PNAS: 3321-3323. 
 #' @references
 #'  Nei M, Chesser RK. (1983). Estimation of fixation indices and gene diversities. Annals of Human Genetics. 47: 253-259.
+#' @references
+#'  Meirmans, PW. (2005), Using the AMOVA framework to estimate a standardized genetic differentiation measure. Evolution 60: 2399-402.
+#' @references
+#'  Excoffier, L., Smouse, P., Quattro, J. (1992), Analysis of molecular variance inferred from metric distances among DNA haplotypes: application to human mitochondrial DNA restriction data. Genetics 131: 479-91
 #' @family diffstat
 #' @examples
 #' data(nancycats)
 #' diff_stats(nancycats)
 
-diff_stats <- function(x){
+diff_stats <- function(x, phi_st=FALSE){
   n <- length(unique(pop(x)))
   harmN <- harmonic_mean(table(pop(x)))
   pops <- pop(x)
   per.locus <- function(g) {
-    #what we need to calculate these stats
-    a <- apply(g@tab,2,function(row) tapply(row, pops, mean, na.rm=TRUE))
-    HpS <- sum(1 - apply(a^2, 1, sum, na.rm=TRUE)) / n
-    Hs_est <- (2*harmN/(2*harmN-1))*HpS
-    HpT <- 1 - sum(apply(a,2,mean, na.rm=TRUE)^2)
-    Ht_est <- HpT + Hs_est/(2*harmN*n)
-    #The stats themselves
+    hets <- HsHt(g, n) #A private function form mmod
+    Ht_est <- hets["Ht_est"]
+    Hs_est <- hets["Hs_est"]
     G_est <- (Ht_est-Hs_est)/Ht_est
     D <- (Ht_est-Hs_est)/(1-Hs_est) * (n/(n-1))
-    Gprime_st <- G_est * (n-1+Hs_est)/((n-1)*(1-Hs_est))
+    Gprime_st <- n * (Ht_est - Hs_est) / ((n * Ht_est - Hs_est) * (1 - Hs_est))
     #And the results formated as list
     result <- c("Hs" = Hs_est, 
                 "Ht" = Ht_est, 
@@ -48,17 +53,28 @@ diff_stats <- function(x){
     return(result)
   }
  loci <- t(sapply(seploc(x), per.locus))
+
   global_Hs <- mean(loci[,1], na.rm=T)
   global_Ht <- mean(loci[,2], na.rm=T)
   global_G_est <- (global_Ht - global_Hs)/global_Ht
-  return(list("per.locus"=loci,
-              global=c(
-                Hs = global_Hs, 
-                Ht = global_Ht, 
-                Gst_est = global_G_est, 
-                "Gprime_st"= global_G_est*(n-1+global_Hs)/((n-1)*(1-global_Hs)),
-                "D_het" = (global_Ht - global_Hs)/(1 - global_Hs ) * (n/(n-1)),
-                "D_mean"= harmonic_mean(loci[,5])
-              )))
+  
+  if(phi_st){
+    phi_stat <- Phi_st_Meirmans(x)
+    loci <- cbind(loci, Phi_st=phi_stat$per.locus)
+
+  }
+  
+  global <- c(Hs = global_Hs, 
+              Ht = global_Ht, 
+              Gst_est = global_G_est, 
+              "Gprime_st"= n * (global_Ht - global_Hs) / ((n * global_Ht - global_Hs)*(1-global_Hs)),
+              "D_het" = (global_Ht - global_Hs)/(1 - global_Hs ) * (n/(n-1)),
+              "D_mean"= harmonic_mean(loci[,5]))
+  
+  if(phi_st){
+    global <- c(global, Phi_st=phi_stat$global)
+  }
+  
+  return(list("per.locus"=loci, global=global))
 }
 

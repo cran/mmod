@@ -7,19 +7,25 @@
 \arguments{
   \item{x}{genind object (from package adegenet)}
 }
+\value{
+  per.locus values for each G''st for each locus in the
+  dataset
+
+  global estimtes for G''st based on overall heterozygosity
+}
 \description{
   This function calculates Hedrick's G'st from a genind
   object
 }
 \details{
   Takes a genind object with population information and
-  calculates Hedrick's G''st. This Returns a list with
-  values for each locus as well as a global estimates
+  calculates Hedrick's G''st.
 
   Because estimators of Hs and Ht are used, it's possible
-  to have negative estimates of Gst. You should treat such
-  results as zeros (or estimating a value close to zero,
-  and getting it a little wrong)
+  to have negative estimates of G''st. You should treat
+  such results as zeros (or an attempt to estimate a very
+  low number with some error which might push it below
+  zero)
 }
 \examples{
 data(nancycats)
@@ -35,7 +41,8 @@ Gst_Hedrick(nancycats)
 }
 \seealso{
   Other diffstat: \code{\link{diff_stats}},
-  \code{\link{D_Jost}}, \code{\link{Gst_Nei}}
+  \code{\link{D_Jost}}, \code{\link{Gst_Nei}},
+  \code{\link{Phi_st_Meirmans}}
 
   Other Hedrick: \code{\link{pairwise_Gst_Hedrick}}
 }

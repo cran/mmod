@@ -10,6 +10,10 @@
 #' Because estimators of Hs and Ht are used, its possible to have negative
 #' estimates of D. You should treat these as numbers close to zero.
 #'
+#' @return per.locus values for each D for each locus in the dataset
+#' @return global estimtes for D based on overall heterozygosity or the harmonic
+#' mean of values for each locus
+#'
 #' @param x genind object (from package adegenet)
 #' @export
 #' @examples
@@ -26,12 +30,9 @@ D_Jost <- function(x){
   harmN <- harmonic_mean(table(pop(x)))
   pops <- pop(x)
   D.per.locus <- function(g) {
-    a <- apply(g@tab,2,function(row) tapply(row, pops, mean, na.rm=TRUE))
-    HpS <- sum(1 - apply(a^2, 1, sum, na.rm=TRUE)) / n
-    Hs_est <- (2*harmN/(2*harmN-1))*HpS
-    HpT <- 1 - sum(apply(a,2,mean, na.rm=TRUE)^2)
-    Ht_est <- HpT + Hs_est/(2*harmN*n)
-    
+    hets <- HsHt(g,n) #A private function form mmod
+    Ht_est <- hets["Ht_est"]
+    Hs_est <- hets["Hs_est"]
     D <- (Ht_est-Hs_est)/(1-Hs_est) * (n/(n-1))
     return(c(Hs_est, Ht_est, D))
   }
