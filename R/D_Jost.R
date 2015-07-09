@@ -13,33 +13,28 @@
 #' @return per.locus values for each D for each locus in the dataset
 #' @return global estimtes for D based on overall heterozygosity or the harmonic
 #' mean of values for each locus
-#'
+#' @param hsht_mean The type of mean to use to calculate values of Hs and Ht
+#' for a global estimate. (Default is teh airthmetic mean, can also be set to
+#' the harmonic mean).
 #' @param x genind object (from package adegenet)
 #' @export
 #' @examples
 #' 
 #' data(nancycats)
 #' D_Jost(nancycats)
+#' D_Jost(nancycats, hsht_mean= "arithmetic")
 #' @references
 #'  Jost, L. (2008), GST and its relatives do not measure differentiation. Molecular Ecology, 17: 4015-4026. 
 #' @family diffstat
 #' @family D
 
-D_Jost <- function(x){
+D_Jost <- function(x, hsht_mean = "arithmetic"){
+  mean_type <- match.arg(hsht_mean, c("arithmetic", "harmonic"))
+  mean_f <- if(mean_type == "arithmetic") mean else harmonic_mean
   gn <- length(unique(pop(x))) 
-  
-  D.per.locus <- function(g) {
-    hets <- HsHt(g) #A private function form mmod
-    Ht_est <- hets[[1]]
-    Hs_est <- hets[[2]]
-    n <- hets[[3]]
-    D <- (Ht_est-Hs_est)/(1-Hs_est) * (n/(n-1))
-    return(c(Hs_est, Ht_est, D))
-  }
-
- loci <- t(sapply(seploc(x), D.per.locus))
-  global_Hs <- mean(loci[,1], na.rm=T)
-  global_Ht <- mean(loci[,2], na.rm=T)
+  loci <- t(sapply(seploc(x), D.per.locus))
+  global_Hs <- mean_f(loci[,1], na.rm=T)
+  global_Ht <- mean_f(loci[,2], na.rm=T)
   global_D <-  (global_Ht - global_Hs)/(1 - global_Hs ) * (gn/(gn-1))
   harm_D <- harmonic_mean(loci[,3])
   return(list("per.locus"=loci[,3],
@@ -48,4 +43,16 @@ D_Jost <- function(x){
         ))
 
 }
+
+D.per.locus <- function(g) {
+    hets <- HsHt(g)
+    if(all(is.na(hets))){
+       return(hets)
+    }
+    Ht_est <- hets[[1]]
+    Hs_est <- hets[[2]]
+    n <- hets[[3]]
+    D <- (Ht_est-Hs_est)/(1-Hs_est) * (n/(n-1))
+    return(c(Hs_est, Ht_est, D))
+  }
 

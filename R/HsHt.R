@@ -7,14 +7,20 @@
 # function is not exported (if someone has a use for it I can change this).
 
 HsHt <- function(x){
-    pops <- pop(x)
-    n_by_pop <- by(x@tab, pops, sum, na.rm=TRUE)
-    n <- sum(n_by_pop > 0)
+    #start by dropping missing for this locus
+    x <- x[complete.cases(x@tab)]
+    n_by_pop <-  table(pop(x))
+    if(length(n_by_pop) < 2){
+        warning("Need at least two population to calculate differentiation")
+        return(c(NA, NA, NA))
+    }
+    afreqs <- apply(x@tab, 2, "/", ploidy(x))
+    n <- nPop(x)
     harmN <- harmonic_mean(n_by_pop[n_by_pop >0])
-    a <- apply(x@tab,2,function(row) tapply(row, pops, mean, na.rm=TRUE))
-    HpS <- sum(1 - apply(a^2, 1, sum, na.rm=TRUE)) / n
+    a <- apply(afreqs, 2, function(A) tapply(A, pop(x), mean))
+    HpS <- mean(1 - rowSums(a^2))
     Hs_est <- (2*harmN/(2*harmN-1))*HpS
-    HpT <- 1 - sum(apply(a,2,mean, na.rm=TRUE)^2)
+    HpT <- 1 - sum(colMeans(a)^2)
     Ht_est <- HpT + Hs_est/(2*harmN*n)
     return(c(Ht_est, Hs_est, n))
 }
