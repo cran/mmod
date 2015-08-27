@@ -1,7 +1,7 @@
-460d26d916d452f8bcb701c67e417ceb *DESCRIPTION
+433d16acf367d02cdd6a8e10dba31248 *DESCRIPTION
 a6e359b28088d820b18dff8203183153 *LICENSE
 4b0fba12dce48fa984863f3d45ad0e64 *NAMESPACE
-c5ceb5ce09c570e5f6c7b76829d504b6 *NEWS
+6c2483578c713200cfecdc5f4ce715f6 *NEWS
 cce540260a8fdd52b4fd542607b95848 *R/D_Jost.R
 9c7b650936c7b66e63eda9d21f0c6ec6 *R/Gst_Hedrick.R
 80e7a7084bfc5fee1d5f21262b933a69 *R/Gst_Nei.R
@@ -15,10 +15,10 @@ a14e49a7d9509c4c3dd2ef1b6266b24a *R/diff_test.R
 b82d4e9cfff4b4fafee078afcf62cb2d *R/harmonic_mean.R
 fac3ae05eef179e24fcc3f31191a2fa2 *R/help.R
 a66123477e16d831f5296e3cbe0ddbfd *R/jacknife_pop.R
-c0a136d6f8363fe26a62200ee9dd8c96 *R/pairwise.R
+14b2372e2b13b10dac2a4957c1fb993a *R/pairwise.R
 9d8ad6c9ada77949bcb7ce7329a9a2b8 *R/rgenotypes.R
 65b33b6c4a58a6c08582697c6c7352a8 *R/summarise_bootstrap.R
-d0c1a603791a004d862c70a958fc72ec *build/vignette.rds
+3d9fe0ec21bb8e4ec6603f4b9428313a *build/vignette.rds
 2e25838c59919c86966831aab8af6103 *inst/CITATION
 5ba83f87941ebbf3975fd66c892e77b4 *inst/doc/mmod-demo.R
 95554054cd24f219831bf8a3dc9f8f4d *inst/doc/mmod-demo.Rnw
@@ -44,3 +44,4 @@ e4d6460f4723ff8e1119dfea32a79dd1 *man/pairwise_Gst_Hedrick.Rd
 f82e4b509b314606c0544e4ba6f8777f *tests/testthat/test.gen
 bd8d1e98f6acd786e068bd52a04a2cd2 *tests/testthat/test_stats.r
 95554054cd24f219831bf8a3dc9f8f4d *vignettes/mmod-demo.Rnw
+ed9b21f22d1268b51a3509dcf09aa31e *vignettes/new.md
